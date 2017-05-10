@@ -1,5 +1,6 @@
 import Vapor
 import HTTP
+import Foundation
 
 class Customer: NodeRepresentable {
     
@@ -73,6 +74,31 @@ drop.get("users",Int.self) {request, userId in
     
     return "UserId is \(userId)"
 }
+
+
+//Grouping
+
+//drop.group("tasks") { tasks in
+// 
+//    //tasks/all
+//    tasks.get("all") {request in
+//        return "All the tasks"
+//    }
+//}
+
+let taskGroups = drop.grouped("tasks")
+
+//tasks/all
+taskGroups.get("all") { request in
+    return "All the tasks"
+}
+
+//tasks/create
+taskGroups.post("create") { request in
+    return "New task"
+}
+
+
 
 
 
