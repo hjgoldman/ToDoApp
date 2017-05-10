@@ -20,7 +20,7 @@ drop.get("hello") { request in
     return try JSON(node :["message":"Hello, world!"])
 }
 
-//JSON
+//Mark: JSON
 drop.get("names") {request in
     return try JSON(node :["name":["John","Mary","Mike","Bill"]])
 }
@@ -41,12 +41,12 @@ drop.get("customer") {request in
     return try JSON(node :[customer1,customer2])
 }
 
-//nesting localhost:8080/foo/bar
+//Mark: nesting localhost:8080/foo/bar
 drop.get("foo","bar") {request in
     return "foo bar"
 }
 
-//errors
+//Mark: errors
 drop.get("404") {request in
     throw Abort.notFound
 }
@@ -55,12 +55,12 @@ drop.get("error") {request in
     throw Abort.custom(status: .badRequest, message: "Sorry!")
 }
 
-//redirect
+//Mark: redirect
 drop.get("vapor") {request in
     return Response(redirect: "https://vapor.codes")
 }
 
-//parameters
+//Mark: parameters
 
 //drop.get("users",":id") {request in
 //    guard let userId = request.parameters["id"]?.int else {
@@ -76,7 +76,7 @@ drop.get("users",Int.self) {request, userId in
 }
 
 
-//Grouping
+//Mark: Grouping
 
 //drop.group("tasks") { tasks in
 // 
@@ -96,6 +96,20 @@ taskGroups.get("all") { request in
 //tasks/create
 taskGroups.post("create") { request in
     return "New task"
+}
+
+//Mark: Post request
+
+drop.post("users") { request in
+   
+    
+    guard let firstName = request.json?["firstName"]?.string,
+          let lastName = request.json?["lastName"]?.string
+    else {
+        throw Abort.badRequest
+    }
+    
+    return firstName + " " + lastName
 }
 
 
