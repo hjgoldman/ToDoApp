@@ -5,12 +5,12 @@ import VaporSQLite
 
 class Customer: NodeRepresentable {
     
-    var id :Int!
+    var customerId :Int!
     var firstName :String!
     var lastName :String!
     
     func makeNode(context: Context) throws -> Node {
-        return try Node(node :["id":self.id,"firstName":self.firstName,"lastName":self.lastName])
+        return try Node(node :["id":self.customerId,"firstName":self.firstName,"lastName":self.lastName])
     }
 }
 
@@ -36,6 +36,29 @@ drop.post("customers","create") { request in
     
     return try JSON(node :result)
 }
+//fetching customers via api
+
+drop.get("customers","all") { request in
+    
+    var customers = [Customer]()
+
+    let result = try drop.database?.driver.raw("SELECT customerId,firstName,lastName FROM Customers;")
+    
+    guard let nodeArray = result?.nodeArray else {
+        return try JSON(node :customers)
+    }
+    
+    for node in nodeArray {
+        let customer = Customer()
+        customer.customerId = node["customerId"]?.int
+        customer.firstName = node["firstName"]?.string
+        customer.lastName = node["lastName"]?.string
+        
+        customers.append(customer)
+    }
+    
+    return try JSON(node :customers)
+}
 
 
 drop.get("hello") { request in
@@ -52,12 +75,12 @@ drop.get("names") {request in
 drop.get("customer") {request in
     
     let customer1 = Customer()
-    customer1.id = 1
+    customer1.customerId = 1
     customer1.firstName = "Hayden"
     customer1.lastName = "Goldman"
     
     let customer2 = Customer()
-    customer2.id = 2
+    customer2.customerId = 2
     customer2.firstName = "John"
     customer2.lastName = "Doe"
     
