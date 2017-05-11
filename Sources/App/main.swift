@@ -25,7 +25,17 @@ drop.get("version") { request in
     let result = try drop.database?.driver.raw("SELECT sqlite_version()")
     return try JSON(node :result)
 }
-
+// post to create a new customer into the db
+drop.post("customers","create") { request in
+    guard let firstName = request.json?["firstName"]?.string,
+        let lastName = request.json?["lastName"]?.string else {
+            throw Abort.badRequest
+    }
+    
+    let result = try drop.database?.driver.raw("INSERT INTO Customers(firstName,lastName) VALUES(?,?)",[firstName,lastName])
+    
+    return try JSON(node :result)
+}
 
 
 drop.get("hello") { request in
