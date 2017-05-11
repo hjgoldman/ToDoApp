@@ -1,6 +1,7 @@
 import Vapor
 import HTTP
 import Foundation
+import VaporSQLite
 
 class Customer: NodeRepresentable {
     
@@ -14,6 +15,18 @@ class Customer: NodeRepresentable {
 }
 
 let drop = Droplet()
+//Mark: SQLite
+
+try drop.addProvider(VaporSQLite.Provider.self)
+
+//test to see if SQLite is set up correctly. This should return the version number for SQLite
+
+drop.get("version") { request in
+    let result = try drop.database?.driver.raw("SELECT sqlite_version()")
+    return try JSON(node :result)
+}
+
+
 
 drop.get("hello") { request in
     
@@ -111,9 +124,6 @@ drop.post("users") { request in
     
     return firstName + " " + lastName
 }
-
-
-
 
 
 drop.run()
