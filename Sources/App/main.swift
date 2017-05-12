@@ -228,7 +228,10 @@ drop.post("register") { request in
 }
 
 
+//Mark: Basic Controller
 
+let controller = TaskViewController()
+controller.addRoutes(drop: drop)
 
 
 
