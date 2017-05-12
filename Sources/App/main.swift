@@ -187,4 +187,52 @@ drop.post("keys") { request in
     return "Valid \(key)"
 }
 
+//Mark: Custom Validation
+
+
+//password validation in a custom class so you can call it throughout the app
+
+class PasswordValidator : ValidationSuite {
+    
+    static func validate(input value: String) throws {
+        let evaluation = !OnlyAlphanumeric.self && Count.containedIn(low: 5, high: 12)
+        
+        try evaluation.validate(input: value)
+    }
+    
+}
+
+
+
+drop.post("register") { request in
+    
+    guard let inputPassword = request.data["password"]?.string else {
+        throw Abort.badRequest
+    }
+    
+    //not using a custonm class
+//    let password = try inputPassword.validated(by : !OnlyAlphanumeric.self && Count.containedIn(low: 5, high: 12))
+    
+    //using custom class
+    
+    //isValid will return true is parameters are passed, false if not
+    let isValid = inputPassword.passes(PasswordValidator.self)
+    
+    //isTested does the same as above but in a diffrent way. if not valid throws the error
+//    let isTested = try inputPassword.tested(by: PasswordValidator.self)
+    
+    let password :Valid<PasswordValidator> = try inputPassword.validated()
+    
+    return "Valid \(password)"
+
+}
+
+
+
+
+
+
+
+
+
 drop.run()
