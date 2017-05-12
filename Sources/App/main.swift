@@ -158,5 +158,33 @@ drop.post("users") { request in
     return firstName + " " + lastName
 }
 
+//Mark: Validation
+
+drop.post("register") { request in
+    
+    let email :Valid<Email> = try request.data["email"].validated()
+    return "Valid \(email)"
+}
+
+drop.post("unique") {request in
+    
+    // a,b,c
+    guard let inputCommaSeparated = request.data["input"]?.string else {
+        throw Abort.badRequest
+    }
+    
+    let unique :Valid<Unique<[String]>> = try inputCommaSeparated.components(separatedBy: ",").validated()
+    return "Valid \(unique)"
+}
+
+drop.post("keys") { request in
+    guard let keyCode = request.data["keyCode"]?.string else {
+        throw Abort.badRequest
+    }
+    
+    let key :Valid<Matches<String>> = try keyCode.validated(by :Matches("Secret"))
+    
+    return "Valid \(key)"
+}
 
 drop.run()
