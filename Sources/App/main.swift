@@ -231,9 +231,13 @@ drop.post("register") { request in
 //Mark: Basic Controller
 
 let controller = TaskViewController()
-controller.addRoutes(drop: drop)
 
+//commented out the below line because we are now using the restful controller, not the basic controller
+//controller.addRoutes(drop: drop)
 
+//Mark: RESTFUL Controller
+
+drop.resource("tasks", controller)
 
 
 

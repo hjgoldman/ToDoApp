@@ -10,6 +10,17 @@ import Vapor
 import HTTP
 import Foundation
 
+class Task: StringInitializable {
+    
+    var name :String!
+
+    required init?(from string: String) throws {
+        self.name = string
+    }
+    
+    
+}
+
 final class TaskViewController {
     
     
@@ -18,7 +29,6 @@ final class TaskViewController {
         
         drop.get("tasks","all",handler :getAllTasks)
         drop.get("tasks",Int.self,handler :getById)
-        
         
     }
     
@@ -30,7 +40,37 @@ final class TaskViewController {
         return "Task Id is \(taskId)"
     }
     
+    //RESTFUL route 
     
+    func index(_ req :Request) throws -> ResponseRepresentable {
+        
+        return "Index"
+    }
+    
+    func show(_ req: Request, task :Task) throws -> ResponseRepresentable {
+        return "Shows"
+    }
+    
+    
+    
+}
+
+//RESTFUL Controller 
+
+extension TaskViewController : ResourceRepresentable {
+
+    typealias Model = Task
+
+    
+    func makeResource() -> Resource<Model> {
+        return Resource (
+            index :index,
+            show :show
+        )
+    }
 
     
 }
+
+
+    
